@@ -1,0 +1,6 @@
+misskey:
+  accessToken:
+  baseUrl: https://misskey.io/api # misskey.io
+
+http:
+  timeout: 5s

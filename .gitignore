@@ -1,3 +1,5 @@
 .vscode
 
 rest/
+
+app/config/config.local.yaml
