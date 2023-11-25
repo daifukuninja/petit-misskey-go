@@ -1,7 +1,7 @@
 package main
 
-import "fmt"
+import "github.com/daifukuninja/petit-misskey-go/app/cmd"
 
 func main() {
-	fmt.Printf("ok.")
+	cmd.Execute()
 }
