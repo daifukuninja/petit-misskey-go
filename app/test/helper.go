@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/daifukuninja/petit-misskey-go/app/config"
+	"github.com/daifukuninja/petit-misskey-go/config"
 	"github.com/stretchr/testify/require"
 )
 

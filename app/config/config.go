@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/daifukuninja/petit-misskey-go/app/model/misskey"
+	"github.com/daifukuninja/petit-misskey-go/model/misskey"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 )

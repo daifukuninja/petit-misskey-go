@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/daifukuninja/petit-misskey-go/app/model/misskey"
-	"github.com/daifukuninja/petit-misskey-go/app/test"
+	"github.com/daifukuninja/petit-misskey-go/model/misskey"
+	"github.com/daifukuninja/petit-misskey-go/test"
 )
 
 func TestMeta(t *testing.T) {

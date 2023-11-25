@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/daifukuninja/petit-misskey-go/app/model/misskey"
+	"github.com/daifukuninja/petit-misskey-go/model/misskey"
 	"github.com/pkg/errors"
 )
 

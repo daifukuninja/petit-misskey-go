@@ -36,6 +36,11 @@ WIP
 - リアクションの取得
 - カスタム絵文字はいったん諦めましょう
 
+## NOTE
+
+- dev container をリビルドした場合に cobra-cli の再インストールが必要かも
+  - 毎回実行する or dev container の機能でどうにかする
+
 ## 参考
 
 https://misskey.io/cli
