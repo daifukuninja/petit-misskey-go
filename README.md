@@ -23,9 +23,21 @@ WIP
 
 ### やること
 
+- cobra の導入と cli 化
+  - アカウントの追加(yaml->toml)
+  - 実装済みエンドポイントの cli 対応
 - ホームタイムラインの取得
+  - tl エンドポイント
+  - streaming api 対応
+- 通知(notifications)の取得
 
 ### 今後の予定
 
 - リアクションの取得
-- カスタム絵文字・・・
+- カスタム絵文字はいったん諦めましょう
+
+## 参考
+
+https://misskey.io/cli
+
+https://github.com/mikuta0407/misskey-cli/tree/main
