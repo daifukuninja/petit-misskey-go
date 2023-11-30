@@ -1,12 +1,12 @@
 /*
 Copyright © 2023 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
 	"fmt"
 
+	"github.com/daifukuninja/petit-misskey-go/service/meta"
 	"github.com/spf13/cobra"
 )
 
@@ -22,6 +22,21 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("meta called")
+
+		key, _ := cmd.Flags().GetString("key")
+
+		instance := userSetting.GetInstanceByKey(key)
+		if instance == nil {
+			panic(fmt.Sprintf("instance key %s is not define", key))
+		}
+		service := meta.NewService(cfg, instance)
+
+		res, err := service.Do(ctx)
+		if err != nil {
+			// TODO: ちゃんとエラー処理する
+			panic(err)
+		}
+		fmt.Println(res)
 	},
 }
 
@@ -37,4 +52,5 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// metaCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// metaCmd.Flags().StringP("key", "k", "", "Instance Key")
 }
