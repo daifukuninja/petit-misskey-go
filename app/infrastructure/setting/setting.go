@@ -29,6 +29,7 @@ type (
 )
 
 func NewUserSetting() *UserSetting {
+	// TODO: once.Doをかける
 	settingDir, _ := os.UserConfigDir()
 	settingPath := filepath.Join(settingDir, "petit-misskey.toml")
 
