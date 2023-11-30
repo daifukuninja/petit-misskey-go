@@ -14,7 +14,7 @@ type Service struct {
 	accessToken model.AccessToken
 }
 
-func NewService(cfg config.Config, instance setting.Instance) *Service {
+func NewService(cfg *config.Config, instance *setting.Instance) *Service {
 	client := misskey.NewClient(instance.BaseUrl, cfg.Http.Timeout)
 
 	return &Service{
