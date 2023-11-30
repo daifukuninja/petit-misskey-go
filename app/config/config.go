@@ -6,7 +6,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/daifukuninja/petit-misskey-go/model/misskey"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 )
@@ -20,12 +19,14 @@ var (
 type ConfigType string
 
 type Config struct {
-	Misskey struct {
-		AccessToken misskey.AccessToken
-		BaseUrl     string
-	}
 	Http struct {
 		Timeout time.Duration
+	}
+	Test struct {
+		InstanceKey string
+		UserName    string
+		BaseUrl     string
+		AccessToken string
 	}
 }
 
@@ -55,5 +56,6 @@ func readConfig(configType ConfigType) error {
 	if err := viper.Unmarshal(&instance); err != nil {
 		return errors.WithStack(err)
 	}
+
 	return nil
 }
