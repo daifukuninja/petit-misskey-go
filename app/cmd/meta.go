@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	"github.com/daifukuninja/petit-misskey-go/service/meta"
+	"github.com/daifukuninja/petit-misskey-go/util"
 	"github.com/spf13/cobra"
 )
 
@@ -36,7 +37,8 @@ to quickly create a Cobra application.`,
 			// TODO: ちゃんとエラー処理する
 			panic(err)
 		}
-		fmt.Println(res)
+		j := util.PrittyJson(res)
+		fmt.Printf("%s", j)
 	},
 }
 
