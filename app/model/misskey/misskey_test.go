@@ -5,15 +5,18 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/daifukuninja/petit-misskey-go/infrastructure/setting"
 	"github.com/daifukuninja/petit-misskey-go/model/misskey"
-	"github.com/daifukuninja/petit-misskey-go/test"
+	"github.com/daifukuninja/petit-misskey-go/service/accounts"
 )
 
 func TestMeta(t *testing.T) {
-	config := test.NewConfig(t, "local")
+	setting := setting.NewUserSetting()
+	service := accounts.NewService(setting)
+	account := service.Get("io") // TODO: setupでアカウントを用意する必要がある
 
 	meta := &misskey.Meta{
-		AccessToken: config.Misskey.AccessToken,
+		AccessToken: account.AccessToken,
 		Detail:      false,
 	}
 	j, err := json.Marshal(meta)

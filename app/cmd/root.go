@@ -1,16 +1,17 @@
 /*
 Copyright © 2023 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
+	"context"
+	"fmt"
 	"os"
 
+	"github.com/daifukuninja/petit-misskey-go/config"
+	"github.com/daifukuninja/petit-misskey-go/infrastructure/setting"
 	"github.com/spf13/cobra"
 )
-
-
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -26,6 +27,11 @@ to quickly create a Cobra application.`,
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
 }
+
+// サブコマンドで使うコンテキストデータ
+var cfg *config.Config
+var userSetting *setting.UserSetting
+var ctx context.Context
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
@@ -45,7 +51,19 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	fmt.Printf("init root\n")
+
+	var err error
+	cfg, err = config.NewConfig("local")
+	if err != nil {
+		panic(err)
+	}
+	userSetting = setting.NewUserSetting()
+
+	ctx = context.Background()
+
+	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	// インスタンス設定のkey
+	rootCmd.PersistentFlags().StringP("key", "k", "", "Instance Key")
 }
-
-
