@@ -10,8 +10,10 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/daifukuninja/petit-misskey-go/model/misskey"
+	"github.com/fatih/color"
 	"github.com/google/uuid"
 	"github.com/sacOO7/gowebsocket"
 )
@@ -36,8 +38,12 @@ var (
 	ChannelTypeHome  = "homeTimeline"
 	ChannelTypeLocal = "localTimeline"
 
+	// TODO: このパッケージはwebsocketによる通信処理の責務を負う。tmplなどの見た目の部分は別パッケージに移管する
 	//go:embed template/note.tmpl
 	NoteTmpl string
+
+	//go:embed template/renote.tmpl
+	RenoteTmpl string
 )
 
 func NewClient(baseUrl string, accessToken string) *Client {
@@ -73,12 +79,37 @@ func (c *Client) Start() error {
 		if err := json.Unmarshal([]byte(message), &note); err != nil {
 			log.Printf("note marshalize error %v", err)
 		}
-		t, err := template.New("note").Parse(NoteTmpl)
-		if err != nil {
-			log.Printf("template error: %v", err)
-		}
-		if err := t.Execute(os.Stdout, note); err != nil {
-			log.Printf("template execute error: %v", err)
+		var data map[string]interface{}
+		if note.Body.Body.RenoteID != "" {
+			t, err := template.New("note").Parse(RenoteTmpl)
+			if err != nil {
+				log.Printf("template error: %v", err)
+			}
+			data = map[string]interface{}{
+				"renotedName":     color.HiBlackString(note.Body.Body.User.Name),
+				"renotedUsername": color.HiBlackString(note.Body.Body.User.Username),
+				"name":            color.HiGreenString(note.Body.Body.Renote.User.Name),
+				"username":        color.HiBlueString(note.Body.Body.Renote.User.Username),
+				"text":            note.Body.Body.Renote.Text,
+				"createdAt":       note.Body.Body.Renote.CreatedAt.Format(time.RFC3339),
+			}
+			if err := t.Execute(os.Stdout, data); err != nil {
+				log.Printf("template execute error: %v", err)
+			}
+		} else {
+			t, err := template.New("note").Parse(NoteTmpl)
+			if err != nil {
+				log.Printf("template error: %v", err)
+			}
+			data = map[string]interface{}{
+				"name":      color.HiGreenString(note.Body.Body.User.Name),
+				"username":  color.HiBlueString(note.Body.Body.User.Username),
+				"text":      note.Body.Body.Text,
+				"createdAt": note.Body.Body.CreatedAt.String(),
+			}
+			if err := t.Execute(os.Stdout, data); err != nil {
+				log.Printf("template execute error: %v", err)
+			}
 		}
 	}
 
