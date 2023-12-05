@@ -23,17 +23,12 @@ WIP
 
 ### やること
 
-- cobra の導入と cli 化
-  - アカウントの追加(yaml->toml)
-  - 実装済みエンドポイントの cli 対応
-- ホームタイムラインの取得
-  - tl エンドポイント
-  - streaming api 対応
+- アカウントの CRUD(toml へ書き込み)
 - 通知(notifications)の取得
+- ノート一覧の見た目改善
+- home と local の指定
+- そろそろ bubbletea の導入
 
-### 今後の予定
-
-- リアクションの取得
 - カスタム絵文字はいったん諦めましょう
 
 ## NOTE
