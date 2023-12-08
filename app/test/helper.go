@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func NewConfig(t *testing.T, configType config.ConfigType) *config.Config {
+func NewConfig(t *testing.T) *config.Config {
 	t.Helper()
 
 	wd, _ := os.Getwd()
@@ -26,9 +26,9 @@ func NewConfig(t *testing.T, configType config.ConfigType) *config.Config {
 
 	require.Nil(t, os.Chdir(filepath.Join(traceBack...)))
 
-	config, err := config.NewConfig(configType)
+	config := config.NewConfig()
 
-	require.NoError(t, err)
+	require.NotNil(t, config)
 
 	return config
 }

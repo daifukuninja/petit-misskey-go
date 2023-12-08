@@ -13,7 +13,7 @@ import (
 )
 
 func TestMeta(t *testing.T) {
-	config := test.NewConfig(t, "local")
+	config := test.NewConfig(t)
 
 	client := misskey.NewClient(
 		config.Test.BaseUrl,
@@ -31,7 +31,7 @@ func TestMeta(t *testing.T) {
 }
 
 func TestCreateNote(t *testing.T) {
-	config := test.NewConfig(t, "local")
+	config := test.NewConfig(t)
 	client := misskey.NewClient(
 		config.Test.BaseUrl,
 		config.Http.Timeout,

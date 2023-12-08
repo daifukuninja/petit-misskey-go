@@ -8,7 +8,7 @@ import (
 )
 
 func TestGetStream(t *testing.T) {
-	cfg := test.NewConfig(t, "local")
+	cfg := test.NewConfig(t)
 	wsClient := websocket.NewClient(cfg.Test.BaseUrl, cfg.Test.AccessToken)
 	wsClient.Start()
 }
