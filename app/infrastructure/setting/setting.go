@@ -6,6 +6,7 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"github.com/daifukuninja/petit-misskey-go/model/misskey"
+	"github.com/google/wire"
 	"github.com/pkg/errors"
 )
 
@@ -26,6 +27,10 @@ type (
 		UserName    string              `toml:"username" validate:"required"`
 		AccessToken misskey.AccessToken `toml:"token" validate:"required"`
 	}
+)
+
+var ProviderSet = wire.NewSet(
+	NewUserSetting,
 )
 
 func NewUserSetting() *UserSetting {

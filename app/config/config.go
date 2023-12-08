@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/google/wire"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 )
@@ -30,15 +31,19 @@ type Config struct {
 	}
 }
 
-func NewConfig(configType ConfigType) (*Config, error) {
+var ProviderSet = wire.NewSet(
+	NewConfig,
+)
+
+func NewConfig() *Config {
 	var err error
 	once.Do(func() {
-		err = readConfig(configType)
+		err = readConfig(ConfigType(configType))
 	})
 	if err != nil {
-		return nil, err
+		panic(err) // TODO: errorを返すとDIに使えないっぽい->どうにかしたい
 	}
-	return instance, nil
+	return instance
 }
 
 func readConfig(configType ConfigType) error {
