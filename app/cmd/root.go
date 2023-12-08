@@ -8,8 +8,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/daifukuninja/petit-misskey-go/config"
-	"github.com/daifukuninja/petit-misskey-go/infrastructure/setting"
 	"github.com/spf13/cobra"
 )
 
@@ -29,9 +27,7 @@ to quickly create a Cobra application.`,
 }
 
 // サブコマンドで使うコンテキストデータ
-var cfg *config.Config
-var userSetting *setting.UserSetting
-var ctx context.Context
+var rootContext context.Context
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
@@ -53,14 +49,7 @@ func init() {
 	// when this action is called directly.
 	fmt.Printf("init root\n")
 
-	var err error
-	cfg, err = config.NewConfig("local")
-	if err != nil {
-		panic(err)
-	}
-	userSetting = setting.NewUserSetting()
-
-	ctx = context.Background()
+	rootContext = context.Background()
 
 	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
