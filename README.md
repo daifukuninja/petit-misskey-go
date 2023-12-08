@@ -35,6 +35,7 @@ WIP
 
 - dev container をリビルドした場合に cobra-cli の再インストールが必要かも
   - 毎回実行する or dev container の機能でどうにかする
+- go install github.com/google/wire/cmd/wire@latest もどうにかする
 
 ## 参考
 
