@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/daifukuninja/petit-misskey-go/infrastructure/misskey"
+	"github.com/daifukuninja/petit-misskey-go/infrastructure/setting"
 	model "github.com/daifukuninja/petit-misskey-go/model/misskey"
 	"github.com/daifukuninja/petit-misskey-go/test"
 	"github.com/daifukuninja/petit-misskey-go/util"
@@ -14,10 +15,12 @@ import (
 
 func TestMeta(t *testing.T) {
 	config := test.NewConfig(t)
+	setting := setting.NewUserSetting()
+	instance := setting.GetInstanceByKey("io")
 
 	client := misskey.NewClient(
-		config.Test.BaseUrl,
-		config.Http.Timeout,
+		config,
+		instance,
 	)
 	body := &model.Meta{
 		AccessToken: model.AccessToken(config.Test.AccessToken),
@@ -32,9 +35,12 @@ func TestMeta(t *testing.T) {
 
 func TestCreateNote(t *testing.T) {
 	config := test.NewConfig(t)
+	setting := setting.NewUserSetting()
+	instance := setting.GetInstanceByKey("io")
+
 	client := misskey.NewClient(
-		config.Test.BaseUrl,
-		config.Http.Timeout,
+		config,
+		instance,
 	)
 	unixnow := time.Now().Unix()
 	text := `テスト投稿:desuwayo::aramaki:

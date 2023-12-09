@@ -6,7 +6,9 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/daifukuninja/petit-misskey-go/di"
+	"github.com/daifukuninja/petit-misskey-go/infrastructure/setting"
+	"github.com/daifukuninja/petit-misskey-go/view"
+	"github.com/daifukuninja/petit-misskey-go/view/meta"
 	"github.com/spf13/cobra"
 )
 
@@ -22,12 +24,15 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("meta run")
-		// TODO: core serviceを使って書き直す
 
 		key, _ := cmd.Flags().GetString("key")
 
-		s := di.InitializeRouter()
-		s.Meta(rootContext, key)
+		setting := setting.NewUserSetting()
+		instance := setting.GetInstanceByKey(key)
+
+		model := meta.InitializeModel(instance)
+
+		view.Run(model)
 	},
 }
 

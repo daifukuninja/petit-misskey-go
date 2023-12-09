@@ -6,7 +6,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/google/wire"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 )
@@ -30,10 +29,6 @@ type Config struct {
 		AccessToken string
 	}
 }
-
-var ProviderSet = wire.NewSet(
-	NewConfig,
-)
 
 func NewConfig() *Config {
 	var err error

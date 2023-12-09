@@ -4,19 +4,21 @@
 //go:build !wireinject
 // +build !wireinject
 
-package di
+package meta
 
 import (
 	"github.com/daifukuninja/petit-misskey-go/config"
+	"github.com/daifukuninja/petit-misskey-go/infrastructure/misskey"
 	"github.com/daifukuninja/petit-misskey-go/infrastructure/setting"
-	"github.com/daifukuninja/petit-misskey-go/router"
+	"github.com/daifukuninja/petit-misskey-go/service/meta"
 )
 
 // Injectors from wire.go:
 
-func InitializeRouter() *router.Router {
+func InitializeModel(instance *setting.Instance) *Model {
 	configConfig := config.NewConfig()
-	userSetting := setting.NewUserSetting()
-	routerRouter := router.New(configConfig, userSetting)
-	return routerRouter
+	client := misskey.NewClient(configConfig, instance)
+	service := meta.NewService(client)
+	model := NewModel(service)
+	return model
 }

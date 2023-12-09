@@ -3,20 +3,16 @@ package meta
 import (
 	"context"
 
-	"github.com/daifukuninja/petit-misskey-go/config"
-	"github.com/daifukuninja/petit-misskey-go/infrastructure/misskey"
-	"github.com/daifukuninja/petit-misskey-go/infrastructure/setting"
+	"github.com/daifukuninja/petit-misskey-go/domain/meta"
 	model "github.com/daifukuninja/petit-misskey-go/model/misskey"
 )
 
 type Service struct {
-	client      *misskey.Client
+	client      meta.Client
 	accessToken model.AccessToken
 }
 
-func NewService(cfg *config.Config, instance *setting.Instance) *Service {
-	client := misskey.NewClient(instance.BaseUrl, cfg.Http.Timeout)
-
+func NewService(client meta.Client) *Service {
 	return &Service{
 		client: client,
 	}

@@ -7,8 +7,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"time"
 
+	"github.com/daifukuninja/petit-misskey-go/config"
+	"github.com/daifukuninja/petit-misskey-go/infrastructure/setting"
 	"github.com/daifukuninja/petit-misskey-go/model/misskey"
 	"github.com/pkg/errors"
 )
@@ -18,10 +19,13 @@ type Client struct {
 	url    string
 }
 
-func NewClient(url string, timeout time.Duration) *Client {
+func NewClient(
+	cfg *config.Config,
+	instance *setting.Instance,
+) *Client {
 	return &Client{
-		client: http.Client{Timeout: timeout},
-		url:    url,
+		client: http.Client{Timeout: cfg.Http.Timeout},
+		url:    instance.BaseUrl,
 	}
 }
 

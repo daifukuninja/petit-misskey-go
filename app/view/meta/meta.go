@@ -17,8 +17,9 @@ type Model struct {
 	quitting bool
 }
 
-func NewModel(ctx context.Context, service *meta.Service) *Model {
+func NewModel(service *meta.Service) *Model {
 	const width = 120
+	ctx := context.Background()
 
 	vp := viewport.New(width, 7)
 	vp.Style = lipgloss.NewStyle().BorderStyle(lipgloss.RoundedBorder()).BorderForeground(lipgloss.Color("62")).PaddingRight(2)
