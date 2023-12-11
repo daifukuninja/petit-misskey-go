@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
+	"io"
 	"log"
 	"net/url"
 	"os"
@@ -22,6 +23,7 @@ type (
 	Client struct {
 		baseUrl     string
 		accessToken string
+		writer      io.Writer
 	}
 	ConnectChannelPayload struct {
 		Type string      `json:"type"`
@@ -46,10 +48,11 @@ var (
 	RenoteTmpl string
 )
 
-func NewClient(baseUrl string, accessToken string) *Client {
+func NewClient(baseUrl string, accessToken string, writeTo io.Writer) *Client {
 	return &Client{
 		baseUrl:     baseUrl,
 		accessToken: accessToken,
+		writer:      writeTo,
 	}
 }
 
@@ -75,6 +78,8 @@ func (c *Client) Start() error {
 
 	socket.OnTextMessage = func(message string, socket gowebsocket.Socket) {
 		// log.Println("Received message " + message)
+		// TODO: このあたりの描画処理はまるごとwriterへ委譲する
+		// Write -> SetContentへ流すViewを作ってClientへDIする
 		note := &misskey.Note{}
 		if err := json.Unmarshal([]byte(message), &note); err != nil {
 			log.Printf("note marshalize error %v", err)
@@ -93,7 +98,7 @@ func (c *Client) Start() error {
 				"text":            note.Body.Body.Renote.Text,
 				"createdAt":       note.Body.Body.Renote.CreatedAt.Format(time.RFC3339),
 			}
-			if err := t.Execute(os.Stdout, data); err != nil {
+			if err := t.Execute(c.writer, data); err != nil {
 				log.Printf("template execute error: %v", err)
 			}
 		} else {
@@ -107,7 +112,7 @@ func (c *Client) Start() error {
 				"text":      note.Body.Body.Text,
 				"createdAt": note.Body.Body.CreatedAt.String(),
 			}
-			if err := t.Execute(os.Stdout, data); err != nil {
+			if err := t.Execute(c.writer, data); err != nil {
 				log.Printf("template execute error: %v", err)
 			}
 		}
