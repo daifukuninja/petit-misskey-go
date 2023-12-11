@@ -26,13 +26,14 @@ to quickly create a Cobra application.`,
 		fmt.Println("meta run")
 
 		key, _ := cmd.Flags().GetString("key")
+		// TODO: キーの入力がなかった場合を確認する
 
-		setting := setting.NewUserSetting()
-		instance := setting.GetInstanceByKey(key)
+		setting := setting.NewUserSetting()       // ユーザ設定を呼び出す
+		instance := setting.GetInstanceByKey(key) // ユーザ設定からインスタンスの接続情報を呼び出す
 
-		model := meta.InitializeModel(instance)
+		model := meta.InitializeModel(instance) // initializerでmodelを作る
 
-		view.Run(model)
+		view.Run(model) // modelをrunnerに渡す
 	},
 }
 

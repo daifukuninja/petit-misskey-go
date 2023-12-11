@@ -8,6 +8,7 @@ package meta
 
 import (
 	"github.com/daifukuninja/petit-misskey-go/config"
+	"github.com/daifukuninja/petit-misskey-go/infrastructure/bubbles"
 	"github.com/daifukuninja/petit-misskey-go/infrastructure/misskey"
 	"github.com/daifukuninja/petit-misskey-go/infrastructure/setting"
 	"github.com/daifukuninja/petit-misskey-go/service/meta"
@@ -19,6 +20,7 @@ func InitializeModel(instance *setting.Instance) *Model {
 	configConfig := config.NewConfig()
 	client := misskey.NewClient(configConfig, instance)
 	service := meta.NewService(client)
-	model := NewModel(service)
+	viewportFactory := bubbles.NewViewportFactory()
+	model := NewModel(service, viewportFactory)
 	return model
 }

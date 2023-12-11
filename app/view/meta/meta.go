@@ -3,36 +3,33 @@ package meta
 import (
 	"context"
 
-	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
+	"github.com/daifukuninja/petit-misskey-go/domain/view"
+	"github.com/daifukuninja/petit-misskey-go/infrastructure/bubbles"
 	"github.com/daifukuninja/petit-misskey-go/service/meta"
 	"github.com/daifukuninja/petit-misskey-go/util"
 )
 
 type Model struct {
-	viewport viewport.Model
+	view     view.SimpleView
 	service  *meta.Service
 	ctx      context.Context
 	quitting bool
 }
 
-func NewModel(service *meta.Service) *Model {
-	const width = 120
+func NewModel(service *meta.Service, viewFactory bubbles.SimpleViewFactory) *Model {
 	ctx := context.Background()
-
-	vp := viewport.New(width, 7)
-	vp.Style = lipgloss.NewStyle().BorderStyle(lipgloss.RoundedBorder()).BorderForeground(lipgloss.Color("62")).PaddingRight(2)
 
 	j, err := service.Do(ctx)
 	if err != nil {
 		return nil
 	}
 
-	vp.SetContent(util.PrittyJson(j))
+	view := viewFactory.View()
+	view.SetContent(util.PrittyJson(j))
 
 	return &Model{
-		viewport: vp,
+		view:     view,
 		service:  service,
 		ctx:      ctx,
 		quitting: false,
@@ -63,7 +60,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 // View renders the program's UI, which is just a string. The view is
 // rendered after every Update.
 func (m Model) View() string {
-	view := m.viewport.View()
+	view := m.view.View()
 	if m.quitting {
 		view += "\n" // NOTE: 終了時に最後の行がつぶれないようにする
 	}
