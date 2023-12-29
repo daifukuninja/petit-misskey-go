@@ -8,13 +8,15 @@ import (
 	"github.com/daifukuninja/petit-misskey-go/infrastructure/bubbles"
 	"github.com/daifukuninja/petit-misskey-go/service/meta"
 	"github.com/daifukuninja/petit-misskey-go/util"
+	runner "github.com/daifukuninja/petit-misskey-go/view"
 )
 
 type Model struct {
-	view     view.SimpleView
-	service  *meta.Service
-	ctx      context.Context
-	quitting bool
+	view       view.SimpleView
+	service    *meta.Service
+	ctx        context.Context
+	quitting   bool
+	teaProgram *tea.Program
 }
 
 func NewModel(service *meta.Service, viewFactory bubbles.SimpleViewFactory) *Model {
@@ -36,13 +38,13 @@ func NewModel(service *meta.Service, viewFactory bubbles.SimpleViewFactory) *Mod
 	}
 }
 
-func (m Model) Init() tea.Cmd {
+func (m *Model) Init() tea.Cmd {
 	return nil
 }
 
 // Update is called when a message is received. Use it to inspect messages
 // and, in response, update the model and/or send a command.
-func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
@@ -59,10 +61,18 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 // View renders the program's UI, which is just a string. The view is
 // rendered after every Update.
-func (m Model) View() string {
+func (m *Model) View() string {
 	view := m.view.View()
 	if m.quitting {
 		view += "\n" // NOTE: 終了時に最後の行がつぶれないようにする
 	}
 	return view
+}
+
+func (m *Model) SetProgram(p *tea.Program) {
+	m.teaProgram = p
+}
+
+func (m *Model) ReceiverChannel() chan runner.Model {
+	return nil
 }

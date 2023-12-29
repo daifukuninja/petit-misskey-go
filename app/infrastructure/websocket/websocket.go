@@ -3,19 +3,20 @@ package websocket
 import (
 	_ "embed"
 	"encoding/json"
-	"fmt"
 	"html/template"
 	"io"
 	"log"
-	"net/url"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
+	"github.com/daifukuninja/petit-misskey-go/domain/urlresolver"
+	"github.com/daifukuninja/petit-misskey-go/infrastructure/resolver"
 	"github.com/daifukuninja/petit-misskey-go/model/misskey"
 	"github.com/fatih/color"
 	"github.com/google/uuid"
+	"github.com/google/wire"
 	"github.com/sacOO7/gowebsocket"
 )
 
@@ -23,6 +24,7 @@ type (
 	Client struct {
 		baseUrl     string
 		accessToken string
+		urlResolver urlresolver.Resolver
 		writer      io.Writer
 	}
 	ConnectChannelPayload struct {
@@ -48,21 +50,29 @@ var (
 	RenoteTmpl string
 )
 
-func NewClient(baseUrl string, accessToken string, writeTo io.Writer) *Client {
+var ProviderSet = wire.NewSet(
+	NewClient,
+	wire.Bind(new(urlresolver.Resolver), new(*resolver.MisskeyStreamUrlResolver)), // FIXME: bindはここじゃなくて利用側(usecase層)に書く
+)
+
+func NewClient(baseUrl string, accessToken string, urlResolver urlresolver.Resolver, writeTo io.Writer) *Client {
 	return &Client{
 		baseUrl:     baseUrl,
 		accessToken: accessToken,
+		urlResolver: urlResolver,
 		writer:      writeTo,
 	}
 }
 
 func (c *Client) Start() error {
-	urlInfo, err := url.Parse(c.baseUrl)
-	if err != nil {
-		panic(err) // TODO: エラー処理
+	wsUrl, resolveErr := c.urlResolver.Resolve(
+		c.baseUrl,
+		map[string]string{
+			"accessToken": c.accessToken,
+		})
+	if resolveErr != nil {
+		return resolveErr
 	}
-	wsUrl := fmt.Sprintf("wss://%s/streaming?i=%s", urlInfo.Host, c.accessToken)
-
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 

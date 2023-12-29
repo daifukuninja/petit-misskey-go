@@ -7,8 +7,24 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-func Run(model tea.Model) {
-	if _, err := tea.NewProgram(model).Run(); err != nil {
+type Model interface {
+	tea.Model
+	// SetProgram(p *tea.Program)
+	ReceiverChannel() chan Model // TODO: Modelじゃなくてtea.Msg
+}
+
+func Run(model Model) {
+	p := tea.NewProgram(model)
+	ch := model.ReceiverChannel()
+
+	go func() {
+		for {
+			<-ch
+			p.Send(model)
+		}
+	}()
+
+	if _, err := p.Run(); err != nil {
 		fmt.Printf("tea runner error. %v", err) // TODO: ちゃんとエラー処理
 		os.Exit(1)
 	}
