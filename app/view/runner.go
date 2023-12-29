@@ -9,18 +9,18 @@ import (
 
 type Model interface {
 	tea.Model
-	// SetProgram(p *tea.Program)
-	ReceiverChannel() chan Model // TODO: Modelじゃなくてtea.Msg
+	MsgChannel() chan tea.Msg
 }
 
 func Run(model Model) {
 	p := tea.NewProgram(model)
-	ch := model.ReceiverChannel()
+	msgCh := model.MsgChannel()
 
 	go func() {
 		for {
-			<-ch
-			p.Send(model)
+			fmt.Println("wait message.")
+			p.Send(<-msgCh)
+			fmt.Println("message received.")
 		}
 	}()
 

@@ -8,45 +8,37 @@ import (
 	"github.com/daifukuninja/petit-misskey-go/infrastructure/bubbles"
 	"github.com/daifukuninja/petit-misskey-go/service/meta"
 	"github.com/daifukuninja/petit-misskey-go/util"
-	runner "github.com/daifukuninja/petit-misskey-go/view"
 )
 
-type Model struct {
-	view       view.SimpleView
-	service    *meta.Service
-	ctx        context.Context
-	quitting   bool
-	teaProgram *tea.Program
-}
+type (
+	Model struct {
+		view       view.SimpleView
+		service    *meta.Service
+		ctx        context.Context
+		quitting   bool
+		teaProgram *tea.Program
+	}
+	initMsg tea.Msg // Updateに起動処理を要求するMsg
+)
 
 func NewModel(service *meta.Service, viewFactory bubbles.SimpleViewFactory) *Model {
-	ctx := context.Background()
-
-	j, err := service.Do(ctx)
-	if err != nil {
-		return nil
-	}
-
-	view := viewFactory.View()
-	view.SetContent(util.PrittyJson(j))
-
 	return &Model{
-		view:     view,
+		view:     viewFactory.View(),
 		service:  service,
-		ctx:      ctx,
+		ctx:      context.Background(),
 		quitting: false,
 	}
 }
 
 func (m *Model) Init() tea.Cmd {
-	return nil
+	return func() tea.Msg { return new(initMsg) } // 起動処理要求を返す
 }
 
 // Update is called when a message is received. Use it to inspect messages
 // and, in response, update the model and/or send a command.
 func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-	case tea.KeyMsg:
+	case tea.KeyMsg: // 終了コマンドの割り込みを処理
 		switch msg.String() {
 		case "q", "ctrl+c", "esc":
 			m.quitting = true
@@ -54,6 +46,18 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		default:
 			return m, nil
 		}
+
+	case initMsg: // 起動処理
+		j, err := m.service.Do(m.ctx)
+		if err != nil {
+			// TODO: viewにエラーメッセージを詰めて返す
+			return m, nil
+		}
+
+		m.view.SetContent(util.PrittyJson(j)) // metaの実行結果をviewに渡す
+
+		return m, nil
+
 	default:
 		return m, nil
 	}
@@ -69,10 +73,6 @@ func (m *Model) View() string {
 	return view
 }
 
-func (m *Model) SetProgram(p *tea.Program) {
-	m.teaProgram = p
-}
-
-func (m *Model) ReceiverChannel() chan runner.Model {
+func (m *Model) MsgChannel() chan tea.Msg {
 	return nil
 }
